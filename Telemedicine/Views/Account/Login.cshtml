@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    var message = ViewBag.Message as string; // 从 ViewBag 獲取消息
+    var messageType = ViewBag.MessageType as string; // 獲取消息類型
+
+
+}
+@using Telemedicine.Resources;
+
+
+
+<!-- Views/Account/Login.cshtml -->
+<section class="vh-100">
+    <div class="container-fluid">
+        <div class="row justify-content-center align-items-center" style="height: 100%;">
+            <div class="col-md-10 col-sm-8 text-black">
+                <div style="height: 100%; margin-top: 20px;">
+                    @if (!string.IsNullOrEmpty(message))
+                    {
+                        <div class="text-center alert alert-@(messageType) blink">
+                            @Html.Encode(message)
+                        </div>
+                    }
+                </div>
+
+                <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+                    <div style="width: 23rem;">
+                        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-inline" }))
+                        {
+                            <h3 class="fw-normal mb-3 pb-3 text-center" style="letter-spacing: 1px; color: #000000;">@Strings.Login</h3>
+                            <div class="form-outline mb-4">
+                                @Html.Label("usernameField", @Strings.Username, new { @class = "form-label" })
+                                @Html.TextBox("username", "", new { @class = "form-control form-control-lg", @id = "usernameField" })
+                            </div>
+                            <div class="form-outline mb-4">
+                                @Html.Label("passwordField", @Strings.Password, new { @class = "form-label" })
+                                @Html.Password("password", "", new { @class = "form-control form-control-lg", @id = "passwordField" })
+                            </div>
+                            <div class="pt-1 mb-4" style="margin-top: 5px;">
+                                <input type="submit" value="@Strings.Login" class="btn btn-info btn-lg btn-block" />
+                            </div>
+                            <p class="small mb-5 pb-lg-2 text-center">
+                                <a class="text-muted" href="#!" style="color: #ffffff">@Strings.Forgotpassword</a>
+                            </p>
+                            <p class="text-center">
+                                @Strings.DoYouHaveAccount
+                                <a href="@Url.Action("Register", "Account")" class="link-info" style="color: #000000">@Strings.Register</a>
+                            </p>
+                        }
+                    </div>
+
+                    <div style="margin-left: 20px;">
+                        <p class="text-center">
+                            掃QRcode登入
+                        </p>
+                        <img src="@Url.Action("GenerateQRCode", "QRCode")" alt="QR Code" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

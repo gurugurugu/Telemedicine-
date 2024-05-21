@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    var message = ViewBag.Message as string; // 从 ViewBag 獲取消息
+    var messageType = ViewBag.MessageType as string; // 獲取消息類型
+
+
+}
+
+<div class="container-fluid" style="height: 100vh;">
+    <!-- 全屏高度 -->
+    <div class="row justify-content-center align-items-center" style="height: 100%;">
+        <!-- 水平和垂直居中 -->
+        <!-- Jumbotron -->
+        @if (!string.IsNullOrEmpty(message))
+        {
+          <div id="message-container" class="text-center">
+                <!-- 消息顯示容器 -->
+            @Html.Partial("_OperationMessage") <!-- 初始化加載 Partial View -->
+        </div>
+        }
+        <div class="col-md-12 text-center">
+            <div class="jumbotron" style="background-color: #f8f9fa; border-radius: 10px; padding: 30px;">
+                <h1>遠距病歷系統</h1>
+                <p class="lead">Telemedicine是一個遠距醫療病歷的管理網頁應用程式。</p>
+            </div>
+        </div>
+
+        <!-- 卡片行 -->
+        <div class="row justify-content-center" style="margin-top: 30px;">
+            <!-- 確保行中间對齊 -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <!-- 卡片内容居中 -->
+                        <h1>醫療病歷</h1>
+                        <p>可以新增、修改、刪除和下載醫療病歷</p>
+                        <a href="@Url.Action("Index", "MedicalRecords")" class="btn btn-danger">管理所有病歷</a> <!-- 路徑修正 -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <!-- 卡片内容居中 -->
+                        <h2>查詢醫療人員</h2>
+                        <p>瀏覽醫療人員的信息。</p>
+                        <a href="@Url.Action("Index", "Doctor")" class="btn btn-info">開始查詢</a> <!-- 路徑修正 -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h2>查詢病人</h2>
+                        <p>瀏覽病人信息。</p>
+                        <a href="@Url.Action("Index", "Patient")" class="btn btn-info">開始查詢</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

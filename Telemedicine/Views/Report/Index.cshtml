@@ -1,0 +1,163 @@
+﻿@using Telemedicine.Viewmodels
+@model IEnumerable<ReportViewModel>
+
+
+
+
+
+<div class="container" style="height: 100vh; display: flex; flex-direction: column; justify-content: flex-start;">
+    <h2>詳細記錄</h2>
+    <div id="message-container">
+        <!-- 消息顯示容器 -->
+        @Html.Partial("_OperationMessage") <!-- 初始化加载 Partial View -->
+    </div>
+    <!-- 让容器佔滿視窗高度，並讓内容靠上對齊 -->
+    <table id="combinedRecordsTable" class="display">
+        <thead>
+            <tr>
+                <th>Record ID</th>
+                <th>Diagnosis</th>
+                <th>Treatment</th>
+                <th>Visit Date</th>
+                <th>Patient ID</th>
+                <th>Patient Name</th>
+                <th>Patient Age</th>
+                <th>Patient Phone</th>
+                <th>Patient Gender</th>
+                <th>Doctor ID</th>
+                <th>Doctor Name</th>
+                <th>Specialty</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Model)
+            {
+                <tr>
+                    <td>@record.RecordId</td>
+                    <td>@record.Diagnosis</td>
+                    <td>@record.Treatment</td>
+                    <td>@record.VisitDate.ToString("yyyy-MM-dd")</td>
+                    <td>@record.PatientId</td>
+                    <td>@record.PatientName</td>
+                    <td>@record.PatientAge</td>
+                    <td>@record.PatientPhone</td>
+                    <td>@record.PatientGender</td>
+                    <td>@record.DoctorId</td>
+                    <td>@record.DoctorName</td>
+                    <td>@record.Specialty</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts {
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <script>
+        $(document).ready(function () {
+
+
+            //添加按鈕
+
+
+            var table = $('#combinedRecordsTable').DataTable({
+                "dom": 'lfrtip',
+                "paging": false,
+                "searching": false,
+                "ordering": false,
+                "info": false,
+                "dom": 'ftip',
+                // 在 "Show entries" 部分前插入按鈕
+                "initComplete": function (settings, json) {
+                                // 創建按钮並插入到 DataTables 上方
+            var btn = $('<button id="exportToWord" class="btn btn-primary">發行Word報告</button>');
+            $(this.api().table().container()).prepend(btn);
+
+            // 按鈕的事件
+            $('#exportToWord').on('click', function () {
+                // 獲取 DataTables 中的第一行數據
+                var data = table.row(0).data();
+                // 創建 FormData
+                var formData = new FormData();
+
+                // 填充 FormData
+                formData.append("RecordId", data[0]);
+                formData.append("Diagnosis", data[1]);
+                formData.append("Treatment", data[2]);
+                formData.append("VisitDate", data[3]);
+                formData.append("PatientId", data[4]);
+                formData.append("PatientName", data[5]);
+                formData.append("PatientAge", data[6]);
+                formData.append("PatientPhone", data[7]);
+                formData.append("PatientGender", data[8]);
+                formData.append("DoctorId", data[9]);
+                formData.append("DoctorName", data[10]);
+                formData.append("Specialty", data[11]);
+
+
+                console.log("FormData:", [...formData.entries()]);
+                // 使用 AJAX 請求
+                $.ajax({
+                    url: '@Url.Action("GenerateWordReport", "Report")',
+                    type: 'POST',
+                    contentType: false,  // 允許瀏覽器自動設置內容類型
+                    processData: false,  // 防止 jQuery 自動處理數據
+                    data: formData,
+                    success: function (response) {
+                        // 成功時的處理邏輯
+                        console.log('成功');
+                        $.ajax({
+                            type: 'GET',
+                            //url: '/Message/ShowMessage', // 控制器的 Action
+                            url: '@Url.Action("ShowMessage", "Message")', // 控制器的 Action
+                            data: { message: "成功生成報告", messageType: 'success' },
+                            success: function (data) {
+                                $('#message-container').html(data); // 更新消息容器
+                                setInterval(blinkMessage, 3000);//閃爍動畫
+
+                            },
+                            error: function (error) {
+                                console.error("Error showing message: ", error);
+                            }
+                        });
+
+                    },
+                    error: function (error) {
+                        // 失敗時的處理邏輯
+                        console.error('失败', error);
+                        $.ajax({
+                            type: 'GET',
+                            url: '@Url.Action("ShowMessage", "Message")', // 控制器的 Action
+                            data: { message: "生成報告失敗", messageType: 'danger' },
+                            success: function (data) {
+                                $('#message-container').html(data); // 更新消息容器
+                                setInterval(blinkMessage, 3000);//閃爍動畫
+
+                            },
+                            error: function (error) {
+                                console.error("Error showing message: ", error);
+                            }
+                        });
+                    }
+                });
+            });
+
+
+                },
+
+
+            });
+
+
+
+        });
+
+
+
+
+
+    </script>
+}
+
+

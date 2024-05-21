@@ -1,0 +1,59 @@
+﻿@{
+    var message = ViewBag.Message as string; // 从 ViewBag 獲取消息
+    var messageType = ViewBag.MessageType as string; // 獲取消息類型
+
+}
+
+@using Telemedicine.Resources;
+<!-- Views/Account/Register.cshtml -->
+<section class="vh-100">
+    <div class="container-fluid">
+        <div class="row align-items-center justify-content-center" style="height: 100%;">
+            <!-- 讓行内元素水平和垂直居中 -->
+            <div class="col-md-10 col-sm-8 text-black">
+                <div style="height: 100%; margin-top: 20px;">
+                    @if (!string.IsNullOrEmpty(message))
+                    {
+                        <div class="text-center alert alert-@(messageType) blink ">
+                            @message
+                        </div>
+                    }
+
+                </div>
+                <!-- 列寬度和文本顏色 -->
+                <!-- 表單部分 -->
+                <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+                    <!-- 保證表單內容居中對齊-->
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-inline", @style = "width: 23rem;" }))
+                    {
+                        <h3 class="fw-normal mb-3 pb-3 text-center" style="letter-spacing: 1px; color: #000000;">@Strings.Register</h3> <!-- 居中標题 -->
+
+                        <div class="form-outline mb-4">
+                            @Html.Label("usernameField", @Strings.Username, new { @class = "form-label" })
+                            @Html.TextBox("username", "", new { @class = "form-control form-control-lg", @id = "usernameField" })
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            @Html.Label("passwordField", @Strings.Password, new { @class = "form-label" })
+                            @Html.Password("password", "", new { @class = "form-control form-control-lg", @id = "passwordField" })
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            @Html.Label("confirmPasswordField", @Strings.ConfirmPassword, new { @class = "form-label" })
+                            @Html.Password("confirmPassword", "", new { @class = "form-control form-control-lg", @id = "confirmPasswordField" })
+                        </div>
+
+                        <div class="form-outline mb-4" style="margin-top: 5px;">
+                            @Html.Label("roleField", @Strings.Role, new { @class = "form-label" })
+                            @Html.DropDownList("role", new SelectList(new[] { "Doctor", "Nurse" }), new { @class = "form-control form-control-lg", @id = "roleField" })
+                        </div>
+
+                        <div class="pt-1 mb-4" style="margin-top: 5px;">
+                            <input type="submit" value="@Strings.Register" class="btn btn-info btn-lg btn-block" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

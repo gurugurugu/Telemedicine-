@@ -1,0 +1,31 @@
+﻿/*提示窗口動畫*/
+@keyframes blink {
+    0% { opacity: 1; }  
+    50% { opacity: 0; } 
+    100% { opacity: 1; } 
+}
+
+.blink {
+    animation: blink 1s infinite; 
+}
+
+
+/*登入頁面*/
+h3 {
+    color: #FFF;
+}
+
+.btn-info {
+    background-color: #74ebd5;
+    border: none;
+}
+
+.link-info {
+    color: #FFF;
+    text-decoration: underline;
+}
+
+    .link-info:hover {
+        color: #ACB6E5;
+    }
+

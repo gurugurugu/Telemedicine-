@@ -1,0 +1,232 @@
+﻿@using Telemedicine.Viewmodels
+@model IEnumerable<PatientViewModel>
+
+
+
+<div class="container">
+    <h2>Patient Records</h2>
+
+    <form id="importForm" enctype="multipart/form-data">
+        <!-- 文件上傳表單 -->
+        <div class="form-group">
+
+            <div class="form-group">
+                <label for="excelFile">上傳病人資料(Excel)</label>
+                <input type="file" id="excelFile" name="excelFile" class="form-control" /> <!-- 文件選擇框 -->
+            </div>
+
+            <div class="form-group">
+                <button type="button" id="importButton" class="btn btn-primary">上傳</button> <!-- 導入按钮 -->
+            </div>
+
+        </div>
+
+
+    </form>
+
+    <!-- 過濾條件 -->
+    <div class="d-flex justify-content-end mb-3 " style="float:right">
+        <!-- 使用 d-flex 和 justify-content-end -->
+        <div class="form-inline">
+            <div class="form-group me-3">
+                <!-- 添加間距 -->
+                <label for="genderFilter">性别</label>
+                <select id="genderFilter" class="form-control">
+                    <option value="">所有</option>
+                    <option value="Male">男</option>
+                    <option value="Female">女</option>
+                </select>
+            </div>
+
+            <div class="form-group me-3">
+                <label for="ageFilter">年齡</label>
+                <select id="ageFilter" class="form-control">
+                    <option value="">所有</option>
+                    <option value="0-18">0-18歲</option>
+                    <option value="19-30">19-30歲</option>
+                    <option value="31-50">31-50歲</option>
+                    <option value="51+">51歲以上</option>
+                </select>
+            </div>
+
+            <div class="form-group me-3">
+                <label for="dateRange">找日期</label>
+                <input type="text" id="dateRange" class="form-control" placeholder="選擇日期">
+            </div>
+
+            <div class="form-group">
+                <button id="searchButton" class="btn btn-primary">查找</button> <!-- 查詢按鈕 -->
+            </div>
+        </div>
+    </div>
+
+    <table id="patientsTable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Patient Name</th>
+                <th>Patient Age</th>
+                <th>Patient Gender</th>
+                <th>Patient Phone</th>
+                <th>Update Date</th>
+                <th>Actions</th> <!-- 新增 Actions 列 -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patient in Model)
+            {
+                <tr>
+                    <td>@patient.PatientId</td>
+                    <td>@patient.PatientName</td>
+                    <td>@patient.PatientAge</td>
+                    <td>@patient.PatientGender</td>
+                    <td>@patient.PatientPhone</td>
+                    <td>@patient.UpdateDate.ToString("yyyy-MM-dd")</td> <!-- 日期格式 -->
+                    <td>
+                        <button class="btn btn-success btn-view-records" data-patientid="@patient.PatientId">View Patient Records</button> <!-- 操作按钮 -->
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+</div>
+
+@section scripts {
+
+    <!-- DataTables 引用 -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css" rel="stylesheet" />  <!-- DataTables 响应式 CSS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>  <!-- DataTables 响应式 JS -->
+    <!-- Select2 -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <!-- flatpickr -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        $(document).ready(function () {
+            var table = $('#patientsTable').DataTable({
+
+
+                "dom": 'lrtip', // 隱藏默認搜索框
+                "lengthChange": false,  // 禁用 "Show entries" 下拉框
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "responsive": true
+
+
+
+            });
+
+
+
+            // 初始化 Select2 和 flatpickr
+            $('#genderFilter').select2();
+            $('#ageFilter').select2();
+            var datePicker = flatpickr("#dateRange", {
+                mode: "range",
+                dateFormat: "Y-m-d", // 日期格式
+                enableTime: true, // 啟用時間
+                time_24hr: true  // 24小时
+            });
+
+            $('#searchButton').on('click', function () {
+                var gender = $('#genderFilter').val(); // 獲取性別
+                var ageRange = $('#ageFilter').val(); // 獲取年齡
+                var selectedDates = datePicker.selectedDates; // 獲取日期
+
+                // self-definie Filter
+                $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                    var genderData = data[3]; // 性别在第 3 列
+                    var ageData = parseInt(data[2]); // 年龄在第 2 列
+                    var updateDate = new Date(data[5]); // 更新日期在第 5 列
+
+                    var ageMatch = true;
+                    var genderMatch = true;
+                    var dateMatch = true;
+
+                    // 性别Filter
+                    if (gender && gender !== genderData) {
+                        genderMatch = false;
+                    }
+
+                    // 年齡Filter
+                    if (ageRange) {
+                        var ageRanges = {
+                            "0-18": [0, 18],
+                            "19-30": [19, 30],
+                            "31-50": [31, 50],
+                            "51+": [51, Infinity]
+                        };
+                        var ageLimits = ageRanges[ageRange];
+                        if (ageData < ageLimits[0] || ageData > ageLimits[1]) {
+                            ageMatch = false;
+                        }
+                    }
+
+                    // 日期Filter
+                    if (selectedDates.length === 2) {
+                        var startDate = selectedDates[0];
+                        var endDate = selectedDates[1];
+
+                        startDate.setHours(0, 0, 0, 0); // 設定為當天開始
+                        endDate.setHours(23, 59, 59, 999); // 設定為當天結束
+
+                        if (updateDate < startDate || updateDate > endDate) {
+                            dateMatch = false;
+                        }
+                    }
+
+                    return ageMatch && genderMatch && dateMatch; // 三個都匹配return true
+                });
+
+                table.draw(); // 執行過濾
+                $.fn.dataTable.ext.search.pop(); // 清除自定義過濾
+            });
+
+            //看醫生看診病人的紀錄
+            $('#patientsTable').on('click', '.btn-view-records', function () {
+                var patientId = $(this).data('patientid'); // 獲取 ID
+                window.location.href = '@Url.Action("Index","MedicalRecords")?patientId=' + patientId; // 跳轉到 Medical Record DataTable
+            });
+
+
+            $(document).ready(function () {
+                $('#importButton').on('click', function () {
+                    var formData = new FormData(); // 使用 FormData 處理文件
+                    formData.append("excelFile", $('#excelFile')[0].files[0]); // 獲取文件
+
+                    $.ajax({
+                        url: '@Url.Action("Import","Patient")',
+                        type: 'POST',
+                        data: formData,
+                        processData: false, // 不要處理數據
+                        contentType: false, // 不設置内容类型
+                        success: function (response) {
+                            if (response.success) {
+                                alert("Import successful");
+                                window.location.reload()
+                            } else {
+                                alert("Error: " + response.message);
+                            }
+                        },
+                        error: function (error) {
+                            console.error("Error during import: ", error);
+                        }
+                    });
+                });
+            });
+
+
+
+        });
+    </script>
+}

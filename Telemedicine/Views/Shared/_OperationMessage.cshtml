@@ -1,0 +1,12 @@
+﻿@{
+    var message = ViewBag.Message as string; // 从 ViewBag 獲取消息
+    var messageType = ViewBag.MessageType as string; // 獲取消息類型
+}
+
+@if (ViewBag.Message != null)
+{
+    <!-- 應用閃爍效果 -->
+    <div class="alert alert-@(ViewBag.MessageType) blink">
+        @ViewBag.Message
+    </div>
+}
