@@ -450,7 +450,7 @@
 
                             // 上傳資料到 API
                             $.ajax({
-                                url: 'https://localhost:44390/api/Photo?recordId=' + recordId,
+                                url: 'http://localhost:8081/api/Photo?recordId=' + recordId,
                                 type: 'POST',
                                 data: formData_pic,
                                 processData: false,  // 告訴 jQuery 不要處理數據

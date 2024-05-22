@@ -137,7 +137,7 @@
                         // 發送API請求獲取圖片下載URL
                         $.ajax({
                             type: 'GET',
-                            url: 'https://localhost:44390/api/photos/download/' + data[0],
+                            url: 'http://localhost:8081/api/photos/download/' + data[0],
                             xhrFields: {
                                 responseType: 'blob' // 將數據作為二進制 Blob 返回
                             },
