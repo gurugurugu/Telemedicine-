@@ -190,6 +190,10 @@
                             <option value="否">否</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="Picture">患部照片</label>
+                        <input type="file" id="photoInput" accept="image/*">
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -249,7 +253,10 @@
                 var rowData = $('#medicalRecordsTable').DataTable().row(row).data(); // 獲取行數據
 
                 var recordId = rowData[1]; // 假設 "Record ID" 在第 1 列
+
+
                 window.location.href = '@Url.Action("Index", "Report")?recordId=' + recordId; // 跳轉到詳細頁面
+
 
             });
 
@@ -397,6 +404,11 @@
                     isFinished: $('#isFinished').val(),
                 };
 
+                var formData_pic = new FormData($('#createNewRecordForm')[0]);
+                var photoFile = $('#photoInput')[0].files[0];
+                formData_pic.append('photo', photoFile);
+
+
                 $.ajax({
                     type: 'POST',
                     url: '@Url.Action("CreateNewRecord","MedicalRecords")',
@@ -436,6 +448,23 @@
 
                             });
 
+                            // 上傳資料到 API
+                            $.ajax({
+                                url: 'https://localhost:44390/api/Photo?recordId=' + recordId,
+                                type: 'POST',
+                                data: formData_pic,
+                                processData: false,  // 告訴 jQuery 不要處理數據
+                                contentType: false,  // 告訴 jQuery 不要設置 content-type
+                                success: function (response) {
+                                    // 在此處理成功回應，可能是將照片 URL 存儲到病歷中
+                                    console.log('Photo uploaded successfully');
+                                },
+                                error: function (xhr, status, error) {
+                                    // 在此處理錯誤
+                                    console.error('Error uploading photo:', error);
+                                }
+                            });
+
                             //
                             $('#medicalRecordsTable tbody tr:first input[type="checkbox"]').attr('data-recordid', recordId);
 
@@ -466,6 +495,13 @@
                         alert('An error occurred: ' + error);
                     }
                 });
+
+
+
+
+
+
+
             });
 
 
