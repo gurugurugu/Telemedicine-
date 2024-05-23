@@ -61,6 +61,7 @@ namespace Telemedicine.Controllers
                     medicalRecords = medicalRecords.Where(r => r.PatientId == patientId).ToList();
                 }
 
+                ViewBag.doctorId = doctorIds;
                 return View(medicalRecords); // 返回視圖
             }
             catch (NullReferenceException ex)
