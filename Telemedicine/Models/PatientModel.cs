@@ -1,6 +1,7 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using Telemedicine.Viewmodels;
@@ -117,7 +118,8 @@ namespace Telemedicine.Models
             {
                 Console.Error.WriteLine("Oracle Error: " + ex.Message);
                 // 您可以返回空列表，抛出異常，或紀錄錯誤
-                throw new ApplicationException("Error querying records", ex); // 重新抛出異常
+
+                throw new ApplicationException(ex.Message); // 重新抛出異常
             }
             catch (Exception ex)
             {

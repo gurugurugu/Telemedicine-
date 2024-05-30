@@ -15,8 +15,8 @@ namespace Telemedicine.Controllers
         public ActionResult GenerateQRCode()
         {
             // 假設從某處獲取了當前用戶的用户名和角色信息
-            string username = "JohnSmith";
-            string role = "Doctor";
+            string username = "*";
+            string role = "*";
 
             // 創建唯一令牌，並將其初始化為為驗證
             var token = Guid.NewGuid().ToString();

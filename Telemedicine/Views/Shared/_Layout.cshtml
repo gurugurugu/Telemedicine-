@@ -136,7 +136,16 @@
         /* 调整 DataTables 的样式以适应响应式设计 */
         table.dataTable {
             width: 100%;
+            border-collapse: collapse;
         }
+        /* 调整表头和表格单元格的样式 */
+        table.dataTable th, table.dataTable td {
+            white-space: nowrap; /* 防止内容换行 */
+            text-align: left; /* 保持左对齐 */
+        }
+
+            
+
     </style>
     <!--Datatables新數據提示-->
     <style>
@@ -213,7 +222,7 @@
         </div>
     </div>
 
-    <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div>
         <!-- 高度佔滿 -->
         <div class="row justify-content-center align-items-center">
 
