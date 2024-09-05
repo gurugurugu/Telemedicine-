@@ -292,6 +292,19 @@
                                 });
 
 
+                                $.ajax({
+                                    url: 'http://localhost:8081/api/photos/delete/' + recordId,
+                                    type: 'GET',
+                                    data: {},
+                                    success: function (data) {
+
+                                    },
+                                    error: function (error) {
+                                        console.error("Error showing message: ", error);
+
+                                    }
+                                });
+
 
                             } else {
                                 alert("Error deleting record: " + response.message);
@@ -301,6 +314,9 @@
                             alert("An error occurred while deleting the record.");
                         }
                     });
+
+
+
                 }
             });
 
@@ -449,6 +465,11 @@
                                 'background-color': '#cce7ff'  // 淺藍色背景
 
                             });
+
+                            //
+
+                            $('#selectAll').prop('checked', false);
+
 
                             // 上傳資料到 API
                             $.ajax({
@@ -644,6 +665,17 @@
 
             // 點擊 "查找" 按鈕後執行過濾
             $('#searchButton').on('click', function () {
+
+
+                $('#selectAll').prop('checked', false);
+
+                // 重置所有行的選中狀態
+                var rows = table.rows({ 'search': 'applied' }).nodes();
+                $('input[type="checkbox"].select-row', rows).prop('checked', false);
+                // 隐藏消息
+                $('#message-container').html(''); // 清空消息容器
+
+
                 var isFinished = $('#isFinishedFilter').val(); // 獲取是否结案的選擇
                 var selectedDates = datePicker.selectedDates; // 獲取選擇的日期範圍
 

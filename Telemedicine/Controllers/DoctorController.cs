@@ -20,6 +20,9 @@ namespace Telemedicine.Controllers
         [Auth]
         public ActionResult Index()
         {
+            var doctorName = Session["User"] as string;
+            string doctorId = _Model.GetDoctorId(doctorName);
+            ViewBag.DoctorId = doctorId;
             List<DoctorViewModel> doctors = _Model.GetDoctors();
             return View(doctors);
         }

@@ -3,12 +3,18 @@
 
 @{
     // 使用 Url.Action 生成 URL
-    var medicalRecordsUrl = Url.Action("Index", "MedicalRecords");
+    string doctorIds = ViewBag.DoctorId;
+    string medicalRecordsUrl = Url.Action("Index", "MedicalRecords");
+
 }
 
 
 <div class="container">
     <h2>Doctors</h2>
+    <div id="message-container">
+        <!-- 消息顯示容器 -->
+        @Html.Partial("_OperationMessage") <!-- 初始化加载 Partial View -->
+    </div>
 
     <div class="form-inline" style="float:right">
         <div class="form-group me-3">
@@ -61,7 +67,7 @@
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
 
     <script>
         $(document).ready(function () {
@@ -105,9 +111,31 @@
 
             //看醫生看診病人的紀錄
             $('#doctorsTable').on('click', '.btn-view-records', function () {
-                var doctorId = $(this).data('doctorid'); // 获取医生 ID
-                var targetUrl = '@medicalRecordsUrl' + '?doctorId=' + doctorId; // 添加查询参数
-                window.location.href = targetUrl; // 重定向到 Medical Records 页面
+                var doctorId = $(this).data('doctorid'); // ID
+
+                var doctorIds ="@doctorIds"
+
+                if (doctorId == doctorIds) {
+                    var targetUrl = '@medicalRecordsUrl' + '?doctorId=' + doctorId; // 添加查询参数
+                    window.location.href = targetUrl; // 重定向到 Medical Records 页面
+                }
+                else {
+                        $.ajax({
+                                type: 'GET',
+                                url: '@Url.Action("ShowMessage", "Message")', // 控制器的 Action
+                                 data: { message: "你沒有權限查看", messageType: 'warning' }, // 成功類型
+                                success: function (data) {
+                                $('#message-container').html(data); // 更新消息容器
+
+                                setInterval(blinkMessage, 3000);//閃爍動畫
+                                },
+                                error: function (error) {
+                                console.error("Error showing message: ", error);
+                                }
+                        });
+
+                }
+
             });
 
 
@@ -116,5 +144,7 @@
         });
 
     </script>
+
+
 }
 
