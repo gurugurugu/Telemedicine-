@@ -16,6 +16,9 @@
     <link href="~/Content/custom.css" rel="stylesheet" />
     <link href="~/Content/Site.css" rel="stylesheet" />
 
+    <!-- 引用 Select2 样式 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
     @Scripts.Render("~/bundles/modernizr")
     <!--按鈕樣式 -->
     <style>
@@ -138,14 +141,11 @@
             width: 100%;
             border-collapse: collapse;
         }
-        /* 调整表头和表格单元格的样式 */
-        table.dataTable th, table.dataTable td {
-            white-space: nowrap; /* 防止内容换行 */
-            text-align: left; /* 保持左对齐 */
-        }
-
-            
-
+            /* 调整表头和表格单元格的样式 */
+            table.dataTable th, table.dataTable td {
+                white-space: nowrap; /* 防止内容换行 */
+                text-align: left; /* 保持左对齐 */
+            }
     </style>
     <!--Datatables新數據提示-->
     <style>
@@ -224,7 +224,7 @@
 
     <div>
         <!-- 高度佔滿 -->
-        <div class="row justify-content-center align-items-center">
+        <div class="d-flex justify-content-center align-items-center">
 
             @Html.Partial("_LoadingAnimation") <!-- 引用 PartialView -->
             <!-- 内容居中 -->
@@ -249,7 +249,7 @@
                     <p>
                         <strong>如果使用上有問題，請聯絡</strong><br /> 
                         E-mail: <a href="mailto:femhf0063@femh.org.tw" style="color: #ffffff;">femhf0063@femh.org.tw</a><br />
-                        電話: <a href="tel:0987707396" style="color: #ffffff;">XX-XXXXXXXX</a>
+                        電話: <a href="" style="color: #ffffff;">分機1867</a>
                     </p>
                 </div>
             </div>

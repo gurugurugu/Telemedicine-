@@ -1,0 +1,46 @@
+﻿@{
+
+    ViewBag.Title = "QR Code";
+
+
+
+}
+<div class="text-center">
+    <h2>QR Code</h2>
+    <img id="qrCodeImage" src="" alt="QR Code" />
+</div>
+
+
+@section scripts {
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script type="text/javascript">
+    $(function () {
+        var connection = $.hubConnection();
+        var authHub = connection.createHubProxy('authHub');
+
+        authHub.on('authSuccess', function () {
+            // 设置会话变量
+            $.ajax({
+                url: 'http://localhost:8080/Session/SetSessionVariables',
+                type: 'POST',
+                data: JSON.stringify({ username: 'JohnSmith', role: 'Doctor' }),
+                contentType: 'application/json; charset=utf-8',
+                success: function () {
+                    // 成功设置会话变量后跳转
+                    window.location.href = '@Url.Action("Index", "Home")';
+                },
+                error: function () {
+                    alert('Failed to set session variables.');
+                }
+            });
+        });
+
+        connection.start().done(function () {
+            var connectionId = connection.id;
+            $('#qrCodeImage').attr('src', '@Url.Action("Generate", "QRCode")?connectionId=' + connectionId);
+        });
+    });
+    </script>
+}

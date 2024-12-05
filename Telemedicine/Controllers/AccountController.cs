@@ -74,9 +74,6 @@ namespace Telemedicine.Controllers
             return View(); // 顯示登入畫面
         }
 
-
-
-
         // 使用者登入
         [HttpPost]
         public ActionResult Login(string username, string password)

@@ -69,5 +69,41 @@ namespace Telemedicine.Models
             return doctors; // 返回醫生列表
         }
 
+        public string GetDoctorId(string doctorName)
+        {
+            string doctorId = null;
+
+            try
+            {
+                string connectionString = connectionModel.DBTEST3con();
+                string query = "SELECT VCHDOCTORID FROM DOCTOR WHERE VCHDOCTORNAME = :doctorName";
+
+                using (OracleConnection connection = new OracleConnection(connectionString))
+                {
+                    using (OracleCommand command = new OracleCommand(query, connection))
+                    {
+                        command.Parameters.Add(new OracleParameter("doctorName", doctorName));
+
+                        connection.Open();
+                        OracleDataReader reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            doctorId = reader["VCHDOCTORID"].ToString();
+                        }
+
+                        reader.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // 處理異常
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+            return doctorId;
+        }
+
     }
 }
